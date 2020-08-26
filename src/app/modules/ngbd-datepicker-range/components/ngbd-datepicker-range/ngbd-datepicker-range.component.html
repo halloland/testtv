@@ -1,0 +1,37 @@
+<ng-template #dp>
+    <ngb-datepicker  (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden">
+    </ngb-datepicker>
+</ng-template>
+
+<ng-template #modal>
+    <ng-template #modalContent let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Choose dates from-to</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <ng-template [ngTemplateOutlet]="dp"></ng-template>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-dark" (click)="reset()">Reset</button>
+            <button type="button" class="btn btn-outline-dark" (click)="modal.close()">Save</button>
+        </div>
+    </ng-template>
+</ng-template>
+
+<ng-template #t let-date let-focused="focused">
+  <span class="custom-day"
+        [class.focused]="focused"
+        [class.range]="isRange(date)"
+        [class.faded]="isHovered(date) || isInside(date)"
+        (mouseenter)="hoveredDate = date"
+        (mouseleave)="hoveredDate = null">
+    {{ date.day }}
+  </span>
+</ng-template>
+
+<ng-template [ngTemplateOutlet]="template === 'modal' ? modal : dp">
+
+</ng-template>

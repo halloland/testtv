@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Vistol Sans';
+    src: local('Vistol Sans Regular'), local('Vistol-Sans-Regular'),
+        url('VistolSans-Regular.woff2') format('woff2'),
+        url('VistolSans-Regular.woff') format('woff'),
+        url('VistolSans-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }

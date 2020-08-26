@@ -1,0 +1,30 @@
+table::ng-deep{
+    th{
+        cursor: pointer;
+
+        .sort-container{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .sort{
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        &.asc{
+            .fa-angle-down{
+                opacity: 0;
+            }
+        }
+
+        &.desc{
+            .fa-angle-up{
+                opacity: 0;
+            }
+        }
+    }
+
+}
+
