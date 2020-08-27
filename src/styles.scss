@@ -2,7 +2,10 @@
 
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
+
 @import "~assets/css/fonts/vistol-sans/style.css";
+@import "node_modules/bootstrap/scss/mixins/_breakpoints";
+@import "node_modules/bootstrap/scss/functions";
 
 body{
     font-family: "Vistol Sans", serif;

@@ -33,6 +33,7 @@ export class NgbdDatepickerRangeDirective{
         const factory = this.resolver.resolveComponentFactory(NgbdDatepickerRangeComponent);
 
         this.datepicker = this.viewContainerRef.createComponent(factory);
+
         this.datepicker.instance.template = "modal";
     }
 

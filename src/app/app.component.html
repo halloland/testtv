@@ -1,105 +1,11 @@
-<!--The content below is only a placeholder and can be replaced.-->
+<ul ngbNav class="nav-tabs">
+    <li ngbNavItem="1">
+        <a ngbNavLink routerLink="/" >Home</a>
+    </li>
+    <li ngbNavItem="2">
+        <a ngbNavLink routerLink="/search">Search</a>
+    </li>
+</ul>
 
-
-<div class="table-container">
-    <div class="error-container">
-        <ngb-alert [ngClass]="{'d-none': !error}" type="danger" [dismissible]="false">Something happened while sending request to the server! <u class="pointer-event" (click)="resendRequest()">Retry</u> </ngb-alert>
-    </div>
-    <div class="form-row search-inputs">
-        <div class="form-group col-md-4">
-            <div class="input-group">
-                <input placeholder="Name" (selectItem)="nameSelect($event)" [(ngModel)]="apiRequestParams.name" [ngbTypeahead]="searchName.bind(this)" (change)="onNameChange($event)" type="text" class="form-control">
-                <div class="input-group-append">
-                    <span class="input-group-text"><i class="fas fa-search"></i></span>
-                </div>
-            </div>
-        </div>
-        <div class="form-group col-md-4">
-            <div ngbDropdown class="d-flex">
-                <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
-                    <span *ngIf="!activeGenre">Genre</span>
-                    <span *ngIf="activeGenre">{{activeGenre.name}}</span>
-                </button>
-                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                    <button ngbDropdownItem (click)="onGenreChange(null)">-</button>
-                    <button ngbDropdownItem *ngFor="let genre of genres;trackBy: genreTrackBy" [class.active]="genre.id === activeGenre?.id"
-                            (click)="onGenreChange(genre)">{{genre.name}}</button>
-                </div>
-            </div>
-        </div>
-        <div class="form-group col-md-4">
-            <div class="input-group">
-                <input ngbdDatepickerRange (onChange)="onRangeDateChange($event)" (onReset)="onRangeDateReset()" placeholder="Premiere date" type="text" class="form-control">
-                <div class="input-group-append">
-                    <span class="input-group-text"><i class="fas fa-calendar-week"></i></span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="loading-table">
-        <div class="spinner-border" role="status" *ngIf="loading"></div>
-        <sortable-table (onSort)="onTableSort($event)">
-            <thead>
-            <tr class="head-table">
-                <th scope="col" [sortable]="sortableColumns.Title">Name</th>
-                <th scope="col" [sortable]="sortableColumns.Popularity">Popularity</th>
-                <th scope="col" [sortable]="sortableColumns.Vote_average">Rating</th>
-                <th scope="col" [sortable]="sortableColumns.Release_date">Premiere</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let movie of movies">
-                <td>
-                    <div class="tv-name-container">
-                        <div class="tv-name">{{movie.title}}</div>
-                        <div class="tv-genres">
-                            <div *ngFor="let genre of movie.genres" class="tv-genre" [ngClass]="('genre' + genre.id)">
-                                {{genre.name.toLowerCase()}}
-                            </div>
-                        </div>
-                    </div>
-
-                </td>
-                <td>{{movie.popularity}}</td>
-                <td>{{movie.vote_average}}</td>
-                <td>{{movie.release_date}}</td>
-            </tr>
-            </tbody>
-        </sortable-table>
-
-        <div *ngIf="!movies.length && didFirstLoad" class="nothing-found">Nothing found.</div>
-
-        <div class="table-placeholder" *ngIf="!didFirstLoad">
-            <ngx-skeleton-loader [theme]="{height: '50px'}"  [count]="activePerPage.count" animation="pulse"></ngx-skeleton-loader>
-        </div>
-    </div>
-
-
-    <div class="table-pagination d-flex" *ngIf="movies.length">
-        <div class="numeric-pagination">
-            <ngb-pagination [collectionSize]="totalItems"
-                            [page]="activePage"
-                            [pageSize]="activePerPage.count"
-                            [maxSize]="3"
-                            [rotate]="true"
-                            [ellipses]="false"
-                            aria-label="Default pagination"
-                            (pageChange)="onPageChange($event)"
-                            *ngIf="didFirstLoad">
-                <ng-template ngbPaginationPrevious><i class="fas fa-angle-left"></i></ng-template>
-                <ng-template ngbPaginationNext><i class="fas fa-angle-right"></i></ng-template>
-                <ng-template ngbPaginationEllipsis>...</ng-template>
-
-                <ng-template ngbPaginationNumber let-page><div>{{page}}</div></ng-template>
-
-            </ngb-pagination>
-
-        </div>
-        <div class="per-page-sizes" *ngIf="movies.length">
-            <div class="per-page-size" *ngFor="let perPage of perPages" [class.active]="perPage.active">
-                <div class="btn" (click)="onPerPageChange(perPage)">{{perPage.count}}</div>
-            </div>
-        </div>
-    </div>
-</div>
+<router-outlet></router-outlet>
 

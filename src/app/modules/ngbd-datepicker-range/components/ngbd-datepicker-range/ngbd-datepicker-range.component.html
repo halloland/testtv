@@ -3,6 +3,11 @@
     </ngb-datepicker>
 </ng-template>
 
+<ng-template #dpMobile>
+    <ngb-datepicker class="mobile" (dateSelect)="onDateSelection($event)" [dayTemplate]="t" outsideDays="hidden">
+    </ngb-datepicker>
+</ng-template>
+
 <ng-template #modal>
     <ng-template #modalContent let-modal>
         <div class="modal-header">
@@ -12,7 +17,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <ng-template [ngTemplateOutlet]="dp"></ng-template>
+            <ng-template [ngTemplateOutlet]="isMobile ? dpMobile : dp"></ng-template>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-outline-dark" (click)="reset()">Reset</button>

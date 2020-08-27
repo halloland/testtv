@@ -19,17 +19,21 @@ export class SortableTableComponent{
     }
 
 
-    handleSort(){
+    private handleSort(): void{
         this.service.onSort().pipe(
             tap((event) => {
-                this.headers.forEach((header) => {
-                    if (header.sortable !== event.column){
-                        header.direction = "";
-                    }
-                });
+               this.changeSort(event);
 
                 this.onSort.emit(event);
             })
         ).subscribe();
+    }
+
+    private changeSort(event: SortEvent): void{
+        this.headers.forEach((header) => {
+            if (header.sortable !== event.column){
+                header.direction = "";
+            }
+        });
     }
 }

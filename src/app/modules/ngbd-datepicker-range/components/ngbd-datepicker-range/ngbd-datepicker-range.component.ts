@@ -4,6 +4,7 @@ import {NgbdDatepickerRangeEvent} from "../../interfaces/ngbd-datepicker-event.i
 import {fromPromise} from "rxjs/internal-compatibility";
 import {map} from "rxjs/operators";
 import {Observable} from "rxjs";
+import {ScreenHelper} from "../../../../helpers/screen-helper";
 
 @Component({
     selector: 'ngbd-datepicker-range',
@@ -14,20 +15,22 @@ export class NgbdDatepickerRangeComponent{
 
     hoveredDate: NgbDate | null = null;
 
-    fromDate: NgbDate;
-    toDate: NgbDate | null = null;
+    @Input() fromDate: NgbDate;
+    @Input() toDate: NgbDate | null = null;
 
     @Input() template = "";
+
+
     @Output() onChange: EventEmitter<NgbdDatepickerRangeEvent> = new EventEmitter();
 
     @ViewChild('modalContent') modalContent: TemplateRef<any>;
 
 
     constructor(private calendar: NgbCalendar, private modalService: NgbModal) {
-        this.fromDate = this.calendar.getToday();
+
     }
 
-    onDateSelection(date: NgbDate) {
+    public onDateSelection(date: NgbDate):void {
         if (!this.fromDate && !this.toDate) {
             this.fromDate = date;
         } else if (this.fromDate && !this.toDate && date.after(this.fromDate)) {
@@ -42,11 +45,11 @@ export class NgbdDatepickerRangeComponent{
         }
     }
 
-    isHovered(date: NgbDate) {
+    public isHovered(date: NgbDate): boolean {
         return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
     }
 
-    public isInside(date: NgbDate) {
+    public isInside(date: NgbDate): boolean {
         return this.toDate && date.after(this.fromDate) && date.before(this.toDate);
     }
 
@@ -62,8 +65,12 @@ export class NgbdDatepickerRangeComponent{
         )
     }
 
-    public reset(){
+    public reset(): void{
         this.fromDate = this.calendar.getToday();
         this.toDate = null;
+    }
+
+    public get isMobile(): boolean{
+        return ScreenHelper.isMobileScreen();
     }
 }

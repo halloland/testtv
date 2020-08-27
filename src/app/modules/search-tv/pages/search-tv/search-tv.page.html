@@ -1,0 +1,174 @@
+<div class="table-container">
+    <div class="error-container">
+        <ngb-alert [ngClass]="{'d-none': !error}" type="danger" [dismissible]="false">Something happened while sending
+            request to the server! <u class="pointer-event" (click)="resendRequest()">Retry</u></ngb-alert>
+    </div>
+
+    <ng-template #sortModal let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">Sort by</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="mobile-sorts">
+                <div class="sort-item-container">
+                    <div class="sort-item">
+                        <label for="sort-default" class="sort-item-name">Default</label>
+                        <input id="sort-default" [checked]="!apiRequestParams.sort_by || apiRequestParams.sort_by === ''" type="radio" name="sort" (change)="onTableSort({column: sortableColumns.Title, direction: ''})">
+                    </div>
+                </div>
+                <div class="sort-item-container" *ngFor="let sortItem of sorts">
+                    <div class="sort-item">
+                        <label [htmlFor]="'sort-asc-' + sortItem.sort_name"  class="sort-item-name">
+                            {{sortItem.name}} <i class="fas fa-long-arrow-alt-up"></i>
+                        </label>
+                        <input [id]="'sort-asc-' + sortItem.sort_name"
+                               [checked]="apiRequestParams.sort_by === sortItem.sort_name && apiRequestParams.sort_type === 'asc'"
+                               type="radio" name="sort" (change)="onTableSort({column: sortItem.sort_name, direction: 'asc'})">
+                    </div>
+                    <div class="sort-item">
+                        <label [htmlFor]="'sort-desc-' + sortItem.sort_name"  class="sort-item-name">
+                            {{sortItem.name}} <i class="fas fa-long-arrow-alt-down"></i>
+                        </label>
+                        <input [id]="'sort-desc-' + sortItem.sort_name"
+                               [checked]="apiRequestParams.sort_by === sortItem.sort_name && apiRequestParams.sort_type === 'desc'"
+                               type="radio" name="sort" (change)="onTableSort({column: sortItem.sort_name, direction: 'desc'})">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        </div>
+    </ng-template>
+
+    <div class="search-backdrop" [class.active]="searchContainerSticky" (click)="closeFilter()"></div>
+
+    <div #searchContainer class="form-row search-inputs" [class.sticky]="searchContainerSticky">
+        <div class="form-group col-sm-4">
+            <div class="input-group">
+                <input placeholder="Name" (selectItem)="nameSelect($event)" [(ngModel)]="apiRequestParams.name"
+                       [ngbTypeahead]="searchName.bind(this)" (change)="onNameChange($event)" type="text"
+                       class="form-control">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-4">
+            <div ngbDropdown class="d-flex">
+                <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
+                    <span *ngIf="!activeGenre">Genre</span>
+                    <span *ngIf="activeGenre">{{activeGenre.name}}</span>
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                    <button ngbDropdownItem (click)="onGenreChange(null)">-</button>
+                    <button ngbDropdownItem *ngFor="let genre of genres;trackBy: genreTrackBy"
+                            [class.active]="genre.id === activeGenre?.id"
+                            (click)="onGenreChange(genre)">{{genre.name}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-4">
+            <div class="input-group">
+                <input ngbdDatepickerRange (onChange)="onRangeDateChange($event)" (onReset)="onRangeDateReset()"
+                       placeholder="Premiere date" type="text" class="form-control">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fas fa-calendar-week"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-4">
+            <div class="btn btn-sort-mobile" (click)="openSortModal()">Sort by</div>
+        </div>
+    </div>
+
+    <div class="loading-table">
+        <div class="loading-container" *ngIf="loading">
+            <div class="spinner-border" role="status"></div>
+        </div>
+        <sortable-table (onSort)="onTableSort($event)">
+            <thead>
+            <tr class="head-table">
+                <th scope="col" [sortable]="sortableColumns.Title">Name</th>
+                <th scope="col" [sortable]="sortableColumns.Popularity">Popularity</th>
+                <th scope="col" [sortable]="sortableColumns.Vote_average">Rating</th>
+                <th scope="col" [sortable]="sortableColumns.Release_date">Premiere</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let movie of movies">
+                <td data-label="Name:">
+                    <div class="tv-name-container">
+                        <div class="tv-name">{{movie.title}}</div>
+                        <div class="tv-genres">
+                            <div *ngFor="let genre of movie.genres" class="tv-genre"
+                                 [ngClass]="('genre' + genre.id)">
+                                {{genre.name.toLowerCase()}}
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td data-label="Popularity:">
+                    {{movie.popularity}}
+                </td>
+                <td data-label="Rating:">
+                    {{movie.vote_average}}
+                </td>
+                <td data-label="Premiere:">
+                    {{movie.release_date}}
+                </td>
+            </tr>
+            </tbody>
+        </sortable-table>
+
+        <div *ngIf="!movies.length && didFirstLoad" class="nothing-found">Nothing found.</div>
+
+        <div class="table-placeholder" *ngIf="!didFirstLoad">
+            <ngx-skeleton-loader [theme]="{height: '50px'}" [count]="activePerPage.count"
+                                 animation="pulse"></ngx-skeleton-loader>
+        </div>
+    </div>
+
+
+    <div class="table-pagination" *ngIf="movies.length">
+        <div class="numeric-pagination">
+            <ngb-pagination [collectionSize]="totalItems"
+                            [page]="activePage"
+                            [pageSize]="activePerPage.count"
+                            [maxSize]="3"
+                            [rotate]="true"
+                            [ellipses]="false"
+                            aria-label="Default pagination"
+                            (pageChange)="onPageChange($event)"
+                            *ngIf="didFirstLoad">
+                <ng-template ngbPaginationPrevious><i class="fas fa-angle-left"></i></ng-template>
+                <ng-template ngbPaginationNext><i class="fas fa-angle-right"></i></ng-template>
+                <ng-template ngbPaginationEllipsis>...</ng-template>
+
+                <ng-template ngbPaginationNumber let-page>
+                    <div>{{page}}</div>
+                </ng-template>
+
+            </ngb-pagination>
+
+        </div>
+        <div class="per-page-sizes" *ngIf="movies.length">
+            <div class="per-page-size" *ngFor="let perPage of perPages" [class.active]="perPage.active">
+                <div class="btn" (click)="onPerPageChange(perPage)">{{perPage.count}}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-results"
+         infiniteScroll
+         [infiniteScrollThrottle]="50"
+         [infiniteScrollDisabled]="isInfiniteDisabled"
+         (scrolled)="onInfiniteScroll()"
+    ></div>
+
+    <div class="btn filter-btn" [class.active]="filterBtnActive" (click)="openFilter()"><i class="fas fa-filter"></i></div>
+</div>
