@@ -197,7 +197,7 @@ export class SearchTvPage {
     }
 
     public get isInfiniteDisabled(): boolean{
-        return this.loading || this.movies.length >= this.totalItems;
+        return this.loading || this.movies.length >= this.totalItems || !ScreenHelper.isMobileScreen();
     }
 
     public openFilter(): void{
