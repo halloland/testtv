@@ -254,9 +254,10 @@ export class SearchTvPage {
     }
 
     private resetMovies(): void {
+        this.activePage = 1;
+        this.apiRequestParams.page = 1;
+
         if (ScreenHelper.isMobileScreen()) {
-            this.activePage = 1;
-            this.apiRequestParams.page = 1;
             this.movies = [];
 
             this.searchContainerSticky = false;

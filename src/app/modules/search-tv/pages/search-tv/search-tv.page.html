@@ -137,7 +137,7 @@
     <div class="table-pagination" *ngIf="movies.length">
         <div class="numeric-pagination">
             <ngb-pagination [collectionSize]="totalItems"
-                            [page]="activePage"
+                            [(page)]="activePage"
                             [pageSize]="activePerPage.count"
                             [maxSize]="3"
                             [rotate]="true"
